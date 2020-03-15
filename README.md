@@ -19,3 +19,5 @@ Lista zadań do wykonania:
 - stworzenie listy ogłoszeń w którcyh cena uległa zmianie oraz listy nowych ogłoszeń,
 - poinformowanie użytkownika o nowych ofertach oraz o tych w których cena się zmieniła,
 
+
+# Status
