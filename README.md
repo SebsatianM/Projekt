@@ -20,9 +20,10 @@ Lista zadań do wykonania:
 - stworzenie listy ogłoszeń w których cena uległa zmianie oraz listy nowych ogłoszeń,
 - poinformowanie użytkownika o nowych ofertach oraz o tych w których cena się zmieniła,
 
-# Potrzebne moduły 
+# Status
+
+
+# Użyte moduły moduły 
 	-beautifulsoup,
 	-selenium,
 	-matplotlib
-
-# Status
