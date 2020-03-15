@@ -24,6 +24,4 @@ Lista zadań do wykonania:
 
 
 # Użyte moduły moduły 
-	-beautifulsoup,
-	-selenium,
-	-matplotlib
+	
