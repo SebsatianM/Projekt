@@ -9,13 +9,13 @@ Dodatkowo chcę stowrzyć newsletter który będzie informował mnie o nowych og
 
 
 Lista zadań do wykonania:
-- pobranie ze strony linków wszystkich ogłoszeń
-- przejście kolejno przez wszystkie ogłoszenia
-- wydobycie niezbędnych informacji z ogłoszeń
-- zapisanie wydobytych informacji 
-- analiza zebranych danych 
-- przedstawienie ich w sensowny sposób
-- porównanie informacji (z aktualnej analizy) z informacjami (z poprzedniej analizy) //w momencie gdy wykonujemy ją kolejny raz
-- stworzenie listy ogłoszeń w którcyh cena uległa zmianie oraz listy nowych ogłoszeń
-- poinformowanie użytkownika o nowych ofertach oraz o tych w których cena się zmieniła
+- pobranie ze strony linków wszystkich ogłoszeń,
+- przejście kolejno przez wszystkie ogłoszenia,
+- wydobycie niezbędnych informacji z ogłoszeń,
+- zapisanie wydobytych informacji ,
+- analiza zebranych danych,
+- przedstawienie ich w sensowny sposób,
+- porównanie informacji (z aktualnej analizy) z informacjami (z poprzedniej analizy), //w momencie gdy wykonujemy ją kolejny raz
+- stworzenie listy ogłoszeń w którcyh cena uległa zmianie oraz listy nowych ogłoszeń,
+- poinformowanie użytkownika o nowych ofertach oraz o tych w których cena się zmieniła,
 
