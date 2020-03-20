@@ -23,5 +23,8 @@ Lista zadań do wykonania:
 # Status
 
 
-# Użyte moduły moduły 
+# Użyte moduły 
+-Selenium
 	
+# Napotkane problemy i rozwiązania
+-'selenium.common.exceptions.WebDriverException: Message: 'geckodriver' executable needs to be in PATH.' rozwiązanie to skopiowanie pliku 'geckodriver' do /usr/local/bin poleceniem 'sudo cp geckodriver /usr/local/bin'

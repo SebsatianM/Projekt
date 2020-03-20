@@ -1,16 +1,16 @@
-import requests
-from bs4 import BeautifulSoup
-import urllib
-import re
+from selenium import webdriver
+from selenium.webdriver.common import keys
+import time
+class Otodombot:
+    def __init__(self, nazwa, haslo):
+        self.nazwa = nazwa
+        self.haslo = haslo
+        self.bot = webdriver.Firefox()
+    
+    def login(self):
+        bot = self.bot
+        bot.get('https://www.otodom.pl/')
+        time.sleep(3)
 
-def getLinks(url):
-    html_page = urllib.urlopen(url)
-    soup = BeautifulSoup(html_page)
-    links = []
-
-    for link in soup.findAll('a', attrs={'href': re.compile("^http://")}):
-        links.append(link.get('href'))
-
-    return links
-
-print( getLinks("https://arstechnica.com") )
+kek = Otodombot('seba5211@wp.pl', 'adassd')
+kek.login()
