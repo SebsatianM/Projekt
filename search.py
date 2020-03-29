@@ -18,5 +18,6 @@ def search_links(page_link,links):
     page_soup = bs(connect_to_courrent_page.text, 'html.parser')
     kek = page_soup.find_all('header', class_="offer-item-header")
     for x in range(len(kek)):
-        links.append(kek[x].find('a', href = re.compile(r'[/]([a-z]|[A-Z])\w+')).attrs['href'])
+        if x > 2:
+            links.append(kek[x].find('a', href = re.compile(r'[/]([a-z]|[A-Z])\w+')).attrs['href'])
     return links
