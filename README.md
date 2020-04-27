@@ -24,7 +24,7 @@ Lista zadań do wykonania:
 
 
 # Użyte moduły 
--Selenium
+-
 	
 # Napotkane problemy i rozwiązania
--'selenium.common.exceptions.WebDriverException: Message: 'geckodriver' executable needs to be in PATH.' rozwiązanie to skopiowanie pliku 'geckodriver' do /usr/local/bin poleceniem 'sudo cp geckodriver /usr/local/bin'
+- Bardzo długi czas pobierania danych (około 2 godzin) z początu pomogło przejście z BeutifullSoup na lxml natomiast dało to około 10% mniejszy czas natomiast poprzez zastosowanie wielowątkowości czas pobierania skrócił się do około 7 minut czyli dało to około 16 krotne przyspieszenie ponieważ najwięcej czasu było marnowane gdy program czekał na odpowedź z serwera a w tym czasie nic nie robił
