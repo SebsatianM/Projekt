@@ -1,41 +1,42 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
-with open('LINKI2.txt', 'r') as f:
-    links = json.loads(f.read())
-with open('data/Area.txt', 'r') as f:
-    Area = json.loads(f.read())
-with open('data/Auction_id.txt', 'r') as f:
-    Auction_id = json.loads(f.read())
-with open('data/Floor.txt', 'r') as f:
-    Floor = json.loads(f.read())
-with open('data/Numer_of_floors.txt', 'r') as f:
-    Numer_of_floors = json.loads(f.read())
-with open('data/Numer_of_rooms.txt', 'r') as f:
-    Numer_of_rooms = json.loads(f.read())
-with open('data/Price_per_meter.txt', 'r') as f:
-    Price_per_meter = json.loads(f.read())
-with open('data/Price.txt', 'r') as f:
-    Price = json.loads(f.read())
-
-list_of_floats = []
-
-for item in Area:
-    pom = item.replace(',','.')
-    list_of_floats.append(float(pom.replace(' ','')))
-
-
+import os
+from datetime import datetime
+def read_data(name):
+    with open(f'{name}.txt', 'r') as f:
+        pom = json.loads(f.read())
+    return pom
+date = datetime.date(datetime.now())
+os.chdir("DATA/"+str(date))
+Price = read_data("Price")
+Area = read_data("Area")
+Auction_id = read_data("Auction_id")
+Floor = read_data("Floor")
+Number_of_floors = read_data("Number_of_floors")
+Number_of_rooms = read_data("Number_of_rooms")
+Price_per_meter = read_data("Price_per_meter")
+URL = read_data("URLs")
+print(len(URL))
+def print_info():
+    print("Cena:", len(Price))
+    print("Cena za metr:", len(Price_per_meter))
+    print("Id:", len(Auction_id))
+    print("Powierzchnia:", len(Area))
+    print("Liczba pokoi:",len(Number_of_rooms))    
+    print("Liczba pieter:", len(Number_of_floors))
+    print("Pietro:", len(Floor))
+        
 
 df = pd.DataFrame({
     'Cena':Price,
-    'Cena_za_metr:':Price_per_meter,
+    'Cena_za_metr':Price_per_meter,
     'Id':Auction_id,
-    'Powierzchnia':list_of_floats,
-    'Liczba pokoi':Numer_of_rooms,
-    'Liczba pieter': Numer_of_floors,
-    'Piętro':Floor
+    'Powierzchnia':Area,
+    'Liczba pokoi':Number_of_rooms,
+    'Liczba pięter': Number_of_floors,
+    'Piętro': Floor,
+    'URL':URL
 })
 
-print(type(Price[123]))
-df[['Cena']].plot(kind='hist',bins=[0.0,200.0,400.0,600.0,800.0,1000.0,1200.0,1400.0,1600.0],rwidth=0.8)
-plt.show()()
+print(df[df["Liczba pięter"]==50])
