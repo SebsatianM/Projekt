@@ -6,26 +6,29 @@ import json
 import os
 import concurrent.futures
 import re
+import random
 Price_list = []
 Price_per_meter_list = []
 Auction_id_list = []
 error_counter = []
-MAX_THREADS = 25
+MAX_THREADS = 30
 Area_list = []
 Number_of_rooms_list = []
 Market_list = []
 Floor_list = []
 Number_of_floors_list = []
 URL_list = []
+Place_list = []
 meh = []
 ended_auction = []
 header = {"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0"}
 def page_scrap(URL):
     """Ta funkcja jako argument przyjmuje adres strony na której znajduje się ogłoszenie po czym sprawdza czy jest ono aktualne jeżeli tak to przystępuje wyciągania danych z tego ogłoszenia
     dopisując je do list, jeżeli nie to pomija podany adres i przechodzi dalej"""
-    
+    timeout = random.uniform(0.01, 0.3)
+    time.sleep(timeout)
     page = requests.get(URL, headers=header)
-    os.system("clear")
+
     print(page.status_code)
     print(len(Floor_list))
     if page.status_code == 200:
@@ -58,13 +61,17 @@ def page_scrap(URL):
                 Number_of_rooms = "Brak danych"
             try:
                 Market = tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Rynek: "]/strong/text()')[0].replace("wt\u00f3rny", "wtorny")
-              
             except IndexError:
                 Market = "Brak danych"
             try:
                 Floor = float(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Piętro: "]/strong/text()')[0])
             except (IndexError, ValueError):
                 Floor = "Brak danych"
+            try:
+                Place = tree.xpath('.//div[@class=" css-0"]/a/text()')
+                Place = Place[0].split(", ")
+            except (IndexError, ValueError):
+                Place = "Brak danych"
             try:
                 Number_of_floors = int(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Liczba pięter: "]/strong/text()')[0])
             except (IndexError, ValueError):
@@ -75,34 +82,27 @@ def page_scrap(URL):
                 Market_list.append(Market)
                 Floor_list.append(Floor)
                 Number_of_floors_list.append(Number_of_floors)
-                URL_list.append("https://www.otodom.pl/oferta/"+URL)
+                URL_list.append(URL)
+                Place_list.append(Place[1])
             except:
                 print("sometinh goes wrong ¯\_(ツ)_/¯")
     else:
         error_counter.append(URL)
-    timeout = 0.22
     time.sleep(timeout)
  
 def download_stories(story_urls):
+    for x in range(story_urls):
+        story_urls[x] = "https://www.otodom.pl/oferta/" + story_urls[x]
     threads = min(MAX_THREADS, len(story_urls))
-    
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
-        executor.map(page_scrap, story_urls)
+        executor.map(page_scrap, (story_urls))
 
 def main(story_urls):
     t0 = time.time()
     download_stories(story_urls)
     t1 = time.time()
     print(f"{(t1-t0)/60} minutes to download {len(linki)} stories.")         
-  
-y = []
 
-os.chdir("DATA/2020-05-07")
-with open('URLs.txt', 'r') as f:
-    linki = json.loads(f.read())
-for x in linki:
-    y.append("https://www.otodom.pl/oferta/" + x)
-main(y[:200])
 
 def save_data(file, name):
     with open(f'{name}.txt', 'w') as f:
@@ -118,15 +118,22 @@ def save():
     save_data(Price_list, 'Price')
     save_data(Market_list, 'Market')
     save_data(URL_list, 'link')
-save()
-print(len(meh))
-print(len(Price_list))
-print(len(Price_per_meter_list))
-print(len(Auction_id_list))
-print(len(error_counter))
-print(len(Area_list))
-print(len(Auction_id_list))
-print(len(Floor_list))
-print(len(Number_of_rooms_list))
-print(len(Number_of_floors_list))
-print(ended_auction)
+
+def show_info():
+    print(len(meh))
+    print(len(Price_list))
+    print(len(Price_per_meter_list))
+    print(len(Auction_id_list))
+    print(len(error_counter))
+    print(len(Area_list))
+    print(len(Auction_id_list))
+    print(len(Floor_list))
+    print(len(Number_of_rooms_list))
+    print(len(Number_of_floors_list))
+    print(len(Place_list))
+    print(Place_list)
+    print(ended_auction)
+page_scrap("https://www.otodom.pl/oferta/kokosowa-3-pokoje-w-pelni-wyposazone-dla-rodziny-ID45Qhc.html#f898b5b1bc")
+page_scrap("https://www.otodom.pl/oferta/kawalerka-nadodrze-28m2-ID45QdO.html#26290de696")
+page_scrap("https://www.otodom.pl/oferta/super-cena-nowoczesny-apartament-na-krzykach-ID45FOr.html#f48e4feefe")
+show_info()
