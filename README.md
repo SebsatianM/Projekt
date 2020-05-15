@@ -29,7 +29,7 @@ Lista zadań do wykonania:
 -BeautifulSoup,
 -requests
 	
-# Napotkane problemy i rozwiązania
+# Bardziej znaczoące napotkane problemy i rozwiązania
 - Bardzo długi czas pobierania danych (około 2 godzin) z początu pomogło przejście z BeutifullSoup na lxml natomiast dało to około 10% mniejszy czas natomiast poprzez zastosowanie wielowątkowości czas pobierania skrócił się do około 7 minut czyli dało to około 16 krotne przyspieszenie ponieważ najwięcej czasu było marnowane gdy program czekał na odpowedź z serwera a w tym czasie nic nie robił
 - Blokada ze strony serwera, znacznym przyspieszeniu scrapowania czasami serwer blokował dostęp error 403 rozwiązaniem było dodanie randomowego czasu w którym program nic nie robił oraz podczas łączenia użyć sejsi aby serwer "pamiętał" maszynę z której się łączymy,
 -Liczne problemy podczas scrapowania min. ogłoszenia które wygasły, brak niektórych zmiennych czy nietypowe przypadki pobieranych zmiennych co powodowało różne długości list z danymi a konsekwencją tego było "rozjeżdżanie" się danych w większości przypadków przypadków pomogł error handling.
