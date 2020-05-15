@@ -17,7 +17,7 @@ Price_list = []
 Price_per_meter_list = []
 Auction_id_list = []
 error_counter = []
-MAX_THREADS = 25
+MAX_THREADS = 30
 Area_list = []
 Number_of_rooms_list = []
 Market_list = []
@@ -27,10 +27,10 @@ URL_list = []
 Place_list = []
 meh = []
 ended_auction = []
-
 header = {"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0"}
 session = requests.Session()
-def connect(): 
+def connect():
+
     session.headers.update(header)
     connect = session.get('https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bcity_id%5D=39&nrAdsPerPage=72')
     soup = bs(connect.text, 'lxml')
@@ -51,12 +51,13 @@ def search_links(page_link):
 def page_scrap(URL):
     """Ta funkcja jako argument przyjmuje adres strony na której znajduje się ogłoszenie po czym sprawdza czy jest ono aktualne jeżeli tak to przystępuje wyciągania danych z tego ogłoszenia
     dopisując je do list, jeżeli nie to pomija podany adres i przechodzi dalej"""
-    timeout = random.uniform(0.01, 0.3)
-    time.sleep(timeout)
+    #timeout = random.uniform(0.01, 0.3)
+    #time.sleep(timeout)
     page = requests.get(URL, headers=header)
-
-    print(page.status_code)
-    print(len(Floor_list))
+    os.system("clear")
+    print("Pomyślnie pobrano:", len(Floor_list), "z")
+    print
+    print("Coś poszło nie tak:",len(error_counter+ended_auction))
     if page.status_code == 200:
         tree = html.fromstring(page.content)
         try:
@@ -86,14 +87,18 @@ def page_scrap(URL):
             except (IndexError,ValueError):
                 Number_of_rooms = "Brak danych"
             try:
-                Market = tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Rynek: "]/strong/text()')[0].replace("wt\u00f3rny", "wtorny")
-              
+                Market = tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Rynek: "]/strong/text()')[0]
             except IndexError:
                 Market = "Brak danych"
             try:
                 Floor = float(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Piętro: "]/strong/text()')[0])
             except (IndexError, ValueError):
                 Floor = "Brak danych"
+            try:
+                Place = tree.xpath('.//div[@class=" css-0"]/a/text()')
+                Place = Place[0].split(", ")
+            except (IndexError, ValueError):
+                Place = "Brak danych"
             try:
                 Number_of_floors = int(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Liczba pięter: "]/strong/text()')[0])
             except (IndexError, ValueError):
@@ -105,6 +110,7 @@ def page_scrap(URL):
                 Floor_list.append(Floor)
                 Number_of_floors_list.append(Number_of_floors)
                 URL_list.append(URL)
+                Place_list.append(Place[1])
             except:
                 print("sometinh goes wrong ¯\_(ツ)_/¯")
     else:
@@ -113,16 +119,17 @@ def page_scrap(URL):
  
 def download_stories(story_urls):
     for x in range(len(story_urls)):
-        story_urls[x] = "https://www.otodom.pl/oferta/" + story_urls[x]
+       story_urls[x] = "https://www.otodom.pl/oferta/" + story_urls[x]
     threads = min(MAX_THREADS, len(story_urls))
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         executor.map(page_scrap, (story_urls))
     if len(error_counter) != 0:
         for x in error_counter:
             page_scrap(x)
+
 def save_data(file, name):
-    with open(f'{name}.txt', 'w') as f:
-        f.write(json.dumps(file))
+    with open(f'{name}.txt', 'w', encoding='utf8') as json_file:
+        json.dump(file,json_file, ensure_ascii=False)
         
 def save():
     save_data(Area_list,"Area")
@@ -134,6 +141,7 @@ def save():
     save_data(Price_list, 'Price')
     save_data(Market_list, 'Market')
     save_data(URL_list, 'link')
+    save_data(Place_list, 'Place')
 
 def show_info():
     print(len(meh))
@@ -146,5 +154,5 @@ def show_info():
     print(len(Floor_list))
     print(len(Number_of_rooms_list))
     print(len(Number_of_floors_list))
+    print(Place_list)
     print(ended_auction)
-page_scrap("https://www.otodom.pl/oferta/kokosowa-3-pokoje-w-pelni-wyposazone-dla-rodziny-ID45Qhc.html#f898b5b1bc")
