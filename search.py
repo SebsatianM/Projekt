@@ -51,13 +51,12 @@ def search_links(page_link):
 def page_scrap(URL):
     """Ta funkcja jako argument przyjmuje adres strony na której znajduje się ogłoszenie po czym sprawdza czy jest ono aktualne jeżeli tak to przystępuje wyciągania danych z tego ogłoszenia
     dopisując je do list, jeżeli nie to pomija podany adres i przechodzi dalej"""
-    #timeout = random.uniform(0.01, 0.3)
-    #time.sleep(timeout)
+    timeout = random.uniform(0.01, 0.26)
+    time.sleep(timeout)
     page = requests.get(URL, headers=header)
-    os.system("clear")
-    print("Pomyślnie pobrano:", len(Floor_list), "z")
-    print
-    print("Coś poszło nie tak:",len(error_counter+ended_auction))
+
+    print(page.status_code)
+    print(len(Floor_list))
     if page.status_code == 200:
         tree = html.fromstring(page.content)
         try:
@@ -87,7 +86,7 @@ def page_scrap(URL):
             except (IndexError,ValueError):
                 Number_of_rooms = "Brak danych"
             try:
-                Market = tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Rynek: "]/strong/text()')[0]
+                Market = tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Rynek: "]/strong/text()')[0].replace("wt\u00f3rny", "wtorny")
             except IndexError:
                 Market = "Brak danych"
             try:
@@ -118,18 +117,25 @@ def page_scrap(URL):
     time.sleep(timeout)
  
 def download_stories(story_urls):
-    for x in range(len(story_urls)):
-       story_urls[x] = "https://www.otodom.pl/oferta/" + story_urls[x]
+    i= 0
+    for x in story_urls:
+        story_urls[i] = "https://www.otodom.pl/oferta/" + x
+        i+=1
+    print(story_urls[2])
     threads = min(MAX_THREADS, len(story_urls))
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         executor.map(page_scrap, (story_urls))
-    if len(error_counter) != 0:
-        for x in error_counter:
-            page_scrap(x)
+
+def main(story_urls):
+    t0 = time.time()
+    download_stories(story_urls)
+    t1 = time.time()
+    print(f"{(t1-t0)/60} minutes to download stories.")         
+
 
 def save_data(file, name):
-    with open(f'{name}.txt', 'w', encoding='utf8') as json_file:
-        json.dump(file,json_file, ensure_ascii=False)
+    with open(f'{name}.txt', 'w') as f:
+        f.write(json.dumps(file))
         
 def save():
     save_data(Area_list,"Area")
@@ -142,7 +148,6 @@ def save():
     save_data(Market_list, 'Market')
     save_data(URL_list, 'link')
     save_data(Place_list, 'Place')
-
 def show_info():
     print(len(meh))
     print(len(Price_list))
@@ -154,5 +159,10 @@ def show_info():
     print(len(Floor_list))
     print(len(Number_of_rooms_list))
     print(len(Number_of_floors_list))
-    print(Place_list)
-    print(ended_auction)
+    print(len(Place_list))
+    print(len(Place_list))
+    print(len(ended_auction))
+def init(): 
+    with open('URLs.txt', 'r') as f:
+        linki = json.loads(f.read())
+    main(linki)

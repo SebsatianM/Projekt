@@ -11,9 +11,7 @@ page_number = search.connect()[0]
 total_offerts_number = search.connect()[1]
 
 def next_step(url):
-    print("mamy to")
-    print(len(url))
-    search.download_stories(url)
+    search.init()
     search.save()
     search.show_info()
 
