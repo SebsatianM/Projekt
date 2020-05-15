@@ -30,7 +30,6 @@ ended_auction = []
 header = {"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0"}
 session = requests.Session()
 def connect():
-
     session.headers.update(header)
     connect = session.get('https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bcity_id%5D=39&nrAdsPerPage=72')
     soup = bs(connect.text, 'lxml')
@@ -114,14 +113,8 @@ def page_scrap(URL):
                 print("sometinh goes wrong ¯\_(ツ)_/¯")
     else:
         error_counter.append(URL)
-    time.sleep(timeout)
  
 def download_stories(story_urls):
-    i= 0
-    for x in story_urls:
-        story_urls[i] = "https://www.otodom.pl/oferta/" + x
-        i+=1
-    print(story_urls[2])
     threads = min(MAX_THREADS, len(story_urls))
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         executor.map(page_scrap, (story_urls))
@@ -134,8 +127,20 @@ def main(story_urls):
 
 
 def save_data(file, name):
-    with open(f'{name}.txt', 'w') as f:
-        f.write(json.dumps(file))
+    with open(f'{name}.txt', 'w', encoding='utf8') as json_file:
+        json.dump(file,json_file, ensure_ascii=False)
+        
+def save():
+    save_data(Area_list,"Area")
+    save_data(Auction_id_list,"Auction_id")
+    save_data(Floor_list, 'Floor')
+    save_data(Number_of_floors_list, 'Number_of_floors')
+    save_data(Number_of_rooms_list, 'Number_of_rooms')
+    save_data(Price_per_meter_list, 'Price_per_meter')
+    save_data(Price_list, 'Price')
+    save_data(Market_list, 'Market')
+    save_data(URL_list, 'link')
+    save_data(Place_list, 'Place')
         
 def save():
     save_data(Area_list,"Area")

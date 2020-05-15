@@ -1,6 +1,4 @@
 import search
-
-pom = []
 import pandas as pd
 import os 
 import json
@@ -30,7 +28,6 @@ def collecting_links():
 dirName = "DATA/" + str(date)
 if not os.path.exists(dirName):
     os.makedirs(dirName)
-    os.chdir(os.getcwd() + "/DATA/" + str(date))
     collecting_links()
 else:   
     os.chdir(os.getcwd() + "/DATA/" + str(date))
