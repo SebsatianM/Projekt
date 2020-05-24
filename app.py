@@ -28,6 +28,7 @@ def collecting_links():
 dirName = "DATA/" + str(date)
 if not os.path.exists(dirName):
     os.makedirs(dirName)
+    os.chdir(os.getcwd() + "/DATA/" + str(date))
     collecting_links()
 else:   
     os.chdir(os.getcwd() + "/DATA/" + str(date))
@@ -44,7 +45,7 @@ else:
                 linki = json.loads(f.read())
         except FileNotFoundError:
             collecting_links()
-    if len(linki) - total_offerts_number < -10:
+    if len(linki) - total_offerts_number > 50:
         collecting_links()
     else:
         next_step(linki)
