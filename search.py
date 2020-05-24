@@ -45,7 +45,7 @@ def search_links(page_link):
     for x in range(len(auction_headers)):
         if x > 2:
             pom = auction_headers[x].find('a', href=re.compile(r'[/]([a-z]|[A-Z])\w+')).attrs['href']
-            links.append(pom[29:])
+            links.append(pom)
 
 def page_scrap(URL):
     """Ta funkcja jako argument przyjmuje adres strony na której znajduje się ogłoszenie po czym sprawdza czy jest ono aktualne jeżeli tak to przystępuje wyciągania danych z tego ogłoszenia
@@ -65,42 +65,42 @@ def page_scrap(URL):
             try:
                 Price_list.append(float(tree.xpath('//div[@class="css-1vr19r7"]/text()')[0][:-3].replace(' ', '').replace(',', '.')))
             except ValueError:
-                Price_list.append("Brak danych")
+                Price_list.append("")
             try:
                 Price_per_meter_list.append(float(tree.xpath('//div[@class="css-zdpt2t"]/text()')[0][:-6].replace(' ', '')))
             except (IndexError, ValueError):
-                Price_per_meter_list.append("Brak danych")
+                Price_per_meter_list.append("")
             try:
                 Auction_id_list.append(int(tree.xpath('//div[@class="css-kos6vh"]/text()')[0][20:]))
             except IndexError:
-                  Auction_id_list.append("Brak danych")
+                  Auction_id_list.append("")
             try:
                 Area = float(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Powierzchnia: "]/strong/text()')[0][:-3])
             except ValueError:
                 Area = float(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Powierzchnia: "]/strong/text()')[0][:-3].replace(",",".").replace(" ", ""))
             except IndexError:
-                Area = "Brak danych"
+                Area = ""
             try:
                 Number_of_rooms = int(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Liczba pokoi: "]/strong/text()')[0])
             except (IndexError,ValueError):
-                Number_of_rooms = "Brak danych"
+                Number_of_rooms = ""
             try:
                 Market = tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Rynek: "]/strong/text()')[0].replace("wt\u00f3rny", "wtorny")
             except IndexError:
-                Market = "Brak danych"
+                Market = ""
             try:
                 Floor = float(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Piętro: "]/strong/text()')[0])
             except (IndexError, ValueError):
-                Floor = "Brak danych"
+                Floor = ""
             try:
                 Place = tree.xpath('.//div[@class=" css-0"]/a/text()')
                 Place = Place[0].split(", ")
             except (IndexError, ValueError):
-                Place = "Brak danych"
+                Place = ""
             try:
                 Number_of_floors = int(tree.xpath('.//div[@class="css-1ci0qpi"]/ul/li[text()="Liczba pięter: "]/strong/text()')[0])
             except (IndexError, ValueError):
-                Number_of_floors = "Brak danych"
+                Number_of_floors = ""
             try:
                 Area_list.append(Area)
                 Number_of_rooms_list.append(Number_of_rooms)

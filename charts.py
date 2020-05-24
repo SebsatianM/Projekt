@@ -1,10 +1,9 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import os
 from datetime import datetime
-os.chdir("DATA/2020-05-15")
+os.chdir("DATA/2020-05-24")
 
 def print_info():
     print("Cena:", len(Price))
@@ -50,6 +49,17 @@ if not os.path.isfile("out.csv"):
 else:
     df = pd.read_csv("out.csv")
 
+pierwotny_cena_df = df[df['Rynek']== "pierwotny"]
+pierwotny_cena_df.set_index("Powierzchnia")
+pierwotny_cena_df = pierwotny_cena_df[pierwotny_cena_df['Powierzchnia'] < 300]
+pierwotny_cena_df = pierwotny_cena_df[pierwotny_cena_df['Cena_za_metr']< 70000]
+pierwotny_cena_df.plot(kind='scatter', x="Powierzchnia", y="Cena_za_metr", color="red",title="Rynek pierwotny")
 
-
-print(df[df["Liczba pokoi"]] != "Brak danych")
+wtorny_cena_df = df[df['Rynek']== "wtorny"]
+wtorny_cena_df.set_index("Powierzchnia")
+wtorny_cena_df = wtorny_cena_df[wtorny_cena_df['Powierzchnia'] < 400]
+wtorny_cena_df = wtorny_cena_df[wtorny_cena_df['Cena_za_metr']< 70000]
+wtorny_cena_df.plot(kind='scatter', x="Powierzchnia",y="Cena_za_metr",color="blue",title="Rynek wtórny")
+plt.show()
+for strefa in df["Strefa"].unique():
+    print(count(df["Strefa"]==strefa))
