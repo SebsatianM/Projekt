@@ -20,10 +20,11 @@ Lista zadań do wykonania:
 - poinformowanie użytkownika o nowych ofertach oraz o tych w których cena się zmieniła,
 
 # Status
-- Na dzień 15.05.2020 projekt jest na etapie pisania modułu do analizy i przedstawiana graficznie zebranych danych, wszystkie poprzednie założenia zostały wykonane, oraz zostały podpięte do szkieletu aplikacji żeby wszysktie wcześniejsze kroki mogły wykonywać się automatycznie w zależności od aktualnego stanu posiadanych danych.
+- Na dzień 25.05.2020 projekt jest na etapie pisania modułu do komunikacji z użytkownikiem jakie informacje go interesują, wszystkie poprzednie założenia zostały wykonane, oraz zostały podpięte do szkieletu aplikacji żeby wszysktie wcześniejsze kroki mogły wykonywać się automatycznie w zależności od aktualnego stanu posiadanych danych.
 
 # Użyte moduły 
 -pandas,
+-seaborn,
 -json,
 -lxml,
 -BeautifulSoup,
