@@ -1,4 +1,5 @@
 import search
+import charts
 import pandas as pd
 import os 
 import json
@@ -9,16 +10,25 @@ page_number = search.connect()[0]
 total_offerts_number = search.connect()[1]
 
 def next_step(url):
-    search.init()
-    search.save()
-    search.show_info()
+    try:
+        with open('Area.txt', 'r') as f:
+            pom = json.loads(f.read())
+            if len(url) - len(pom) > 200:
+                search.init()
+                search.save
+    except FileNotFoundError:
+        search.init()
+        search.save()
+    charts.main()
+    charts.ploting()
+
 
 def collecting_links():
     for page_num in range(page_number+1):
         search.search_links('https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bcity_id%5D=39&nrAdsPerPage=72&page=' + str(page_num))
         os.system("clear")
         print("Pobieranie danych na dzień:{}".format(date))
-        print("Collecting auction URLs:",round((len(search.links)/total_offerts_number)*100),"%")
+        print("Pobiernie linków:",round((len(search.links)/total_offerts_number)*100),"%")
     links = search.links
     with open('URLs.txt', 'w') as f:
         f.write(json.dumps(links))
@@ -45,7 +55,7 @@ else:
                 linki = json.loads(f.read())
         except FileNotFoundError:
             collecting_links()
-    if len(linki) - total_offerts_number > 50:
+    if len(linki) - total_offerts_number > 100:
         collecting_links()
     else:
         next_step(linki)
