@@ -114,16 +114,11 @@ def page_scrap(URL):
     else:
         error_counter.append(URL)
  
-def download_stories(story_urls):
+def main(story_urls):
     threads = min(MAX_THREADS, len(story_urls))
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
-        executor.map(page_scrap, (story_urls))
+        executor.map(page_scrap, story_urls)
 
-def main(story_urls):
-    t0 = time.time()
-    download_stories(story_urls)
-    t1 = time.time()
-    print(f"{(t1-t0)/60} minutes to download stories.")         
 
 
 def save_data(file, name):
@@ -167,7 +162,11 @@ def show_info():
     print(len(Place_list))
     print(len(Place_list))
     print(len(ended_auction))
+
 def init(): 
     with open('URLs.txt', 'r') as f:
         linki = json.loads(f.read())
+    t0 = time.time()
     main(linki)
+    t1 = time.time()
+    print(f"{(t1-t0)/60} minutes to download stories.")         

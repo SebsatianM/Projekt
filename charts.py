@@ -1,9 +1,11 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 from datetime import datetime
-os.chdir("DATA/2020-05-24")
+sns.set()
+os.chdir("DATA/2020-05-25")
 
 def print_info():
     print("Cena:", len(Price))
@@ -43,23 +45,54 @@ if not os.path.isfile("out.csv"):
         'Liczba pięter': Number_of_floors,
         'Piętro': Floor,
         'URL':link
-    })
+    }, dtype ='object')
     df.to_csv('out.csv', index=False)
+    df = pd.read_csv("out.csv")
     
 else:
     df = pd.read_csv("out.csv")
+def ploting():
 
-pierwotny_cena_df = df[df['Rynek']== "pierwotny"]
-pierwotny_cena_df.set_index("Powierzchnia")
-pierwotny_cena_df = pierwotny_cena_df[pierwotny_cena_df['Powierzchnia'] < 300]
-pierwotny_cena_df = pierwotny_cena_df[pierwotny_cena_df['Cena_za_metr']< 70000]
-pierwotny_cena_df.plot(kind='scatter', x="Powierzchnia", y="Cena_za_metr", color="red",title="Rynek pierwotny")
+    sns_strefa_rynek = sns.lmplot(x="Powierzchnia", y="Cena", hue="Rynek", data=df_after_null_price,palette="Set1",height=6,col="Strefa",ci=70)
+    sns_strefa_rynek.savefig("Strefa_rynek.png")
 
-wtorny_cena_df = df[df['Rynek']== "wtorny"]
-wtorny_cena_df.set_index("Powierzchnia")
-wtorny_cena_df = wtorny_cena_df[wtorny_cena_df['Powierzchnia'] < 400]
-wtorny_cena_df = wtorny_cena_df[wtorny_cena_df['Cena_za_metr']< 70000]
-wtorny_cena_df.plot(kind='scatter', x="Powierzchnia",y="Cena_za_metr",color="blue",title="Rynek wtórny")
-plt.show()
-for strefa in df["Strefa"].unique():
-    print(count(df["Strefa"]==strefa))
+
+    columny= ['Cena','Cena_za_metr','Powierzchnia']
+    sns_cena_plot = sns.pairplot(df_after_null_price[columny], height=4)
+    sns_cena_plot.savefig("Ceny.png")
+
+
+
+    fig, ax = plt.subplots(3,1, figsize=(12,20))
+    sns.countplot(df_after_null_price['Liczba pokoi'], ax=ax[0])
+    sns.countplot(df_after_null_price['Piętro'], ax=ax[1])
+    sns.countplot(df_after_null_price['Strefa'], ax=ax[2])
+    ax[2].set_xticklabels(ax[2].get_xticklabels(), rotation=50, ha="right")
+
+
+    fig.savefig("Liczba.png")
+    plt.tight_layout(pad=4.0)
+    plt.subplots_adjust(left=0.08, bottom=0.1)
+    plt.figure(figsize=(15, 10))
+    sns_pokoje = sns.boxplot(x='Liczba pokoi', y='Cena', data = df_after_null_price)
+  
+    plt.show()
+
+df_after_null_price = df.copy()
+
+df_after_null_price.drop(['Id','URL'],axis=1, inplace=True) #wyrzucam kolumny URL i Id ponieważ do wykresów nie będą one potrzebne
+df_after_null_price.dropna(subset=["Cena"], inplace=True)
+
+df_after_null_price = df_after_null_price.infer_objects()
+print(df_after_null_price.dtypes) 
+
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
+
+df_after_null_price = df_after_null_price[df_after_null_price["Powierzchnia"] < 200.0]  #wyrzucanie powierzchni powyżej 1000 m^2
+df_after_null_price = df_after_null_price[df_after_null_price["Cena"] < 2000000.0]  #wyrzucanie ceny powyżej 2 mln
+df_after_null_price = df_after_null_price[df_after_null_price["Liczba pięter"] < 30]  #wyrzucanie powierzchni powyżej 1000 m^2
+for strefa in df_after_null_price["Strefa"].unique():   #usuwanie z naszycha danych strefy w której mamy mniej niż 10 ogłoszeń
+    if len(df_after_null_price[df_after_null_price["Strefa"] == strefa]) < 10:
+        df_after_null_price = df_after_null_price[df_after_null_price["Strefa"] != strefa]
+        
+ploting()
