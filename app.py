@@ -1,5 +1,6 @@
 import search
 import charts
+import emails
 import pandas as pd
 import os 
 import json
@@ -20,8 +21,22 @@ def next_step(url):
         search.init()
         search.save()
     charts.main()
-    charts.ploting()
-
+    
+    while True:
+        action = input("Wpisz co chcesz zrobić:\n(0).Wyświetl wykresy \n(1).Jednorazowo wyślij wykresy na maila\n(2).Ustaw jakie aukcje Cię interesują aby dostawać powiadomienia na maila\n(3).Edytuj swoje ustawienia\n")
+        try:
+            action = int(action)
+            if (0 <= action <= 5):
+                break
+            print ("\nWybrałeś błędną operacje")
+        except ValueError:
+            print("\nWprowadź liczbę!")
+            
+    if action == 0:
+        charts.ploting()
+    elif action == 1:
+        email_adr = str(input("Podaj swojego maila aby otrzymać wykresy!\n"))
+        emails.send_charts(email_adr)
 
 def collecting_links():
     for page_num in range(page_number+1):
@@ -36,6 +51,7 @@ def collecting_links():
 
 
 dirName = "DATA/" + str(date)
+
 if not os.path.exists(dirName):
     os.makedirs(dirName)
     os.chdir(os.getcwd() + "/DATA/" + str(date))

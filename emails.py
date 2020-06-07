@@ -1,57 +1,46 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
 from email import encoders
+import os
+def send_charts(toaddr):
 
-fromaddr= "otodom.notify@gmail.com"
-toaddr ="seba5211@wp.pl"
+    fromaddr= "otodom.notify@gmail.com"
+    msg = MIMEMultipart()
 
-msg = MIMEMultipart()
+    msg['From'] = fromaddr
+    msg['To'] = toaddr
+    msg['Subject'] = "Analiza rynku"
 
-msg['From'] = fromaddr
-msg['To'] = toaddr
-msg['Subject'] = "Analiza rynku"
+    from datetime import datetime
+    date = datetime.date(datetime.now())
 
-from datetime import datetime
-date = datetime.date(datetime.now())
+    body = str("Analiza mieszkań we Wrocławiu z dnia {}".format(date))
 
-body = str("Analiza z dnia {}".format(date))
+    msg.attach(MIMEText(body, 'plain'))
 
-msg.attach(MIMEText(body, 'plain'))
+    img_data1 = open("Ceny.png", 'rb').read()
+    image1 = MIMEImage(img_data1, name=os.path.basename("Ceny.png"))
 
-filename1 = "Ceny.png"
-attachment1 = open("DATA/{}/Ceny.png".format(date), "rb")
-filename2 = "Liczba.png"
-attachment2 = open("DATA/{}/Liczba.png".format(date), "rb")
-filename3 = "Strefa_rynek.png"
-attachment3 = open("DATA/{}/Strefa_rynek.png".format(date), "rb")
+    img_data2 = open("Liczba.png", 'rb').read()
+    image2 = MIMEImage(img_data2, name=os.path.basename("Liczba.png"))
 
-part1 = MIMEBase('application', 'octet-stream')
-part2 = MIMEBase('application', 'octet-stream')
-part3 = MIMEBase('application', 'octet-stream')
+    img_data3 = open("Strefa_rynek.png", 'rb').read()
+    image3 = MIMEImage(img_data3, name=os.path.basename("Strefa_rynek.jpg"))
 
-part1.set_payload((attachment1).read())
-encoders.encode_base64(part1)
-part1.add_header('Content-Disposition', "attachment; filename= %s" % filename1)
+    msg.attach(image1)
+    msg.attach(image2)
+    msg.attach(image3)
 
-part2.set_payload((attachment2).read())
-encoders.encode_base64(part2)
-part2.add_header('Content-Disposition', "attachment; filename= %s" % filename2)
-
-part3.set_payload((attachment3).read())
-encoders.encode_base64(part3)
-part3.add_header('Content-Disposition', "attachment; filename= %s" % filename3)
-
-msg.attach(part1)
-msg.attach(part2)
-msg.attach(part3)
-
-server = smtplib.SMTP('smtp.gmail.com', 587)
-server.starttls()
-server.login(fromaddr, "SilneHaslo12345")
-text = msg.as_string()
-server.sendmail(fromaddr, toaddr, text)
-server.quit()
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(fromaddr, "SilneHaslo12345")
+    text = msg.as_string()
+    try:
+        server.sendmail(fromaddr, toaddr, text)
+    except smtplib.SMTPRecipientsRefused:
+        print("Wprowadzono ")
+    server.quit()
 
 
