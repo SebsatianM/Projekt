@@ -1,12 +1,14 @@
 import search
 import charts
 import emails
+import set_settings
 import pandas as pd
 import os 
 import json
 from datetime import datetime
-date = datetime.date(datetime.now())
 
+date = datetime.date(datetime.now())
+dirName = "DATA/" + str(date)
 page_number = search.connect()[0]
 total_offerts_number = search.connect()[1]
 
@@ -21,22 +23,38 @@ def next_step(url):
         search.init()
         search.save()
     charts.main()
-    
     while True:
-        action = input("Wpisz co chcesz zrobić:\n(0).Wyświetl wykresy \n(1).Jednorazowo wyślij wykresy na maila\n(2).Ustaw jakie aukcje Cię interesują aby dostawać powiadomienia na maila\n(3).Edytuj swoje ustawienia\n")
-        try:
-            action = int(action)
-            if (0 <= action <= 5):
+        while True:
+            action = input("Wpisz co chcesz zrobić:\n(0).Wyświetl wykresy \n(1).Jednorazowo wyślij wykresy na maila\n(2).Ustaw jakie aukcje Cię interesują aby dostawać powiadomienia na maila\n(3).Edytuj swoje ustawienia\n")
+            try:
+                action = int(action)
+                if (0 <= action <= 5):
+                    break
+                print ("\nWybrałeś błędną operacje")
+            except ValueError:
+                print("\nWprowadź liczbę!")
+        if action == 0:
+            charts.ploting()
+            exit_val = input("Wyjść? [Y/N]: ")
+            if exit_val.upper() == "Y":
                 break
-            print ("\nWybrałeś błędną operacje")
-        except ValueError:
-            print("\nWprowadź liczbę!")
-            
-    if action == 0:
-        charts.ploting()
-    elif action == 1:
-        email_adr = str(input("Podaj swojego maila aby otrzymać wykresy!\n"))
-        emails.send_charts(email_adr)
+        elif action == 1:
+            email_adr = str(input("Podaj swojego maila aby otrzymać wykresy!\n"))
+            emails.send_charts(email_adr)
+        elif action == 2:
+            os.chdir("../../")
+            print(os.getcwd())
+            try:
+                with open('settings.json', 'r') as f:
+                    print("wsat")
+                    s = json.loads(f.read())
+                    os.chdir(os.getcwd() + "/DATA/" + str(date))
+                    charts.notification(s)
+            except FileNotFoundError:
+                set_settings.main()
+        elif action == 3:
+            set_settings.main()
+
 
 def collecting_links():
     for page_num in range(page_number+1):
@@ -50,7 +68,7 @@ def collecting_links():
     next_step(links)
 
 
-dirName = "DATA/" + str(date)
+
 
 if not os.path.exists(dirName):
     os.makedirs(dirName)

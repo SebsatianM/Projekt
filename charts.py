@@ -9,7 +9,7 @@ def read_data(name):
     with open(f'{name}.txt', 'r') as f:
         pom = json.loads(f.read())
     return pom
- 
+
 def main():
     if not os.path.isfile("out.csv"):
         Price = read_data("Price")
@@ -57,7 +57,9 @@ def main():
     for strefa in df_after_null_price["Strefa"].unique():   #usuwanie z naszycha danych strefy w której mamy mniej niż 10 ogłoszeń
         if len(df_after_null_price[df_after_null_price["Strefa"] == strefa]) < 10:
             df_after_null_price = df_after_null_price[df_after_null_price["Strefa"] != strefa]
-    sns_strefa_rynek = sns.lmplot(x="Powierzchnia", y="Cena", hue="Rynek", data=df_after_null_price,palette="Set1",height=6,col="Strefa",ci=70)
+
+    sns_strefa_rynek = sns.lmplot(x="Powierzchnia", y="Cena", hue="Rynek", data=df_after_null_price, palette="Set1", height=6, col="Strefa", ci=70)
+    
     sns_strefa_rynek.savefig("Strefa_rynek.png")
 
 
@@ -78,12 +80,25 @@ def main():
     plt.subplots_adjust(left=0.08, bottom=0.1)
     plt.figure(figsize=(15, 10))
    
-    sns_pokoje = sns.boxplot(x='Liczba pokoi', y='Cena', data = df_after_null_price)
+    sns_pokoje = sns.boxplot(x='Liczba pokoi', y='Cena', data=df_after_null_price)
+    sns_pokoje.figure.savefig("Pokoje_Cena.png")
+
 def ploting():  
     plt.show()
-
-    
-
+     
+def notification(setting_dict):
+    frame = pd.read_csv("out.csv")
+    locals().update(setting_dict)
+    frame.drop(['Id'],axis=1, inplace=True) #wyrzucam kolumny URL i Id ponieważ do wykresów nie będą one potrzebne
+    frame.dropna(subset=["Cena"], inplace=True)
+    print(market)
+    if market == "obojętnie":
+        print("")
+    else:
+        frame = frame[frame["Market"] == market]
+    if price_lowest != "Brak danych":
+        frame = frame[frame["Cena"]> price_lowest]
+        
 def print_info():
     print("Cena:", len(Price))
     print("Cena za metr:", len(Price_per_meter))
