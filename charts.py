@@ -74,8 +74,6 @@ def main():
     sns.countplot(df_after_null_price['Strefa'], ax=ax[2])
     ax[2].set_xticklabels(ax[2].get_xticklabels(), rotation=50, ha="right")
     
-
-
     fig.savefig("Liczba.png")
     plt.subplots_adjust(left=0.08, bottom=0.1)
     plt.figure(figsize=(15, 10))
@@ -88,17 +86,42 @@ def ploting():
      
 def notification(setting_dict):
     frame = pd.read_csv("out.csv")
-    locals().update(setting_dict)
+    globals().update(setting_dict)
     frame.drop(['Id'],axis=1, inplace=True) #wyrzucam kolumny URL i Id ponieważ do wykresów nie będą one potrzebne
     frame.dropna(subset=["Cena"], inplace=True)
-    print(market)
-    if market == "obojętnie":
-        print("")
-    else:
-        frame = frame[frame["Market"] == market]
+
+    if market == "wtorny" or market == "pierwotny":
+        frame = frame[frame["Rynek"] == market]
     if price_lowest != "Brak danych":
-        frame = frame[frame["Cena"]> price_lowest]
-        
+        frame = frame[frame["Cena"] >= price_lowest]
+    if price_highest != "Brak danych":
+        frame = frame[frame["Cena"] <= price_highest]
+    if rooms_lowest != "Brak danych":
+        frame.dropna(subset=["Liczba pokoi"], inplace=True)
+        frame = frame[frame["Liczba pokoi"] >= rooms_lowest]
+    if rooms_highest != "Brak danych":
+        frame.dropna(subset=["Liczba pokoi"], inplace=True)
+        frame = frame[frame["Liczba pokoi"] <= rooms_highest]
+    if floor_lowest != "Brak danych":
+        frame.dropna(subset=["Piętro"], inplace=True)
+        frame = frame[frame["Piętro"] >= floor_lowest]
+    if floor_highest != "Brak danych":
+        frame.dropna(subset=["Piętro"], inplace=True)
+        frame = frame[frame["Piętro"] <= floor_highest]
+    if area_lowest != "Brak danych":
+        frame = frame[frame["Powierzchnia"] >= area_lowest]
+    if area_highest != "Brak danych":
+        frame = frame[frame["Powierzchnia"] <= area_highest]
+    selected_urls = frame["URL"].unique()
+    
+    outF = open('Url_to_email.txt', "w")
+    for line in selected_urls:
+    # write line to output file
+        outF.write(line)
+        outF.write("\n")
+    outF.close()
+    return len(frame["URL"].unique())
+    
 def print_info():
     print("Cena:", len(Price))
     print("Cena za metr:", len(Price_per_meter))
