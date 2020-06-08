@@ -16,11 +16,14 @@ Lista zadań do wykonania:
 - analiza zebranych danych,
 - przedstawienie ich w sensowny sposób,
 - porównanie informacji (z aktualnej analizy) z informacjami (z poprzedniej analizy), //w momencie gdy wykonujemy ją kolejny raz
-- stworzenie listy ogłoszeń w których cena uległa zmianie oraz listy nowych ogłoszeń,
-- poinformowanie użytkownika o nowych ofertach oraz o tych w których cena się zmieniła,
+- stworzenie listy ogłoszeń które pasują do zapisanych lub utworzonych ustawień,
+- poinformowanie użytkownika o nowych ofertach ktróre pasują do jego wymagań,
+
+# Uruchomienie
+Posiadając zainstalowane wszystkie potrzebne moduły/biblioteki wystarczy w terminalu uruchomić plik 'app.py'
 
 # Status
-- Na dzień 25.05.2020 projekt jest na etapie pisania modułu do komunikacji z użytkownikiem jakie informacje go interesują, wszystkie poprzednie założenia zostały wykonane, oraz zostały podpięte do szkieletu aplikacji żeby wszysktie wcześniejsze kroki mogły wykonywać się automatycznie w zależności od aktualnego stanu posiadanych danych.
+- Na dzień 08.06.2020 projekt jest zakończony natomiast nie z założeń nie zostało wykonane porównywanie danych które otrzymaliśmy z aktualengo scrapowania z danymi z poprzednich analiz
 
 # Użyte moduły 
 -pandas,
@@ -28,9 +31,10 @@ Lista zadań do wykonania:
 -json,
 -lxml,
 -BeautifulSoup,
--requests
-	
-# Bardziej znaczoące napotkane problemy i rozwiązania
+-requests,
+-smtplib
+
+# Bardziej znaczące napotkane problemy i rozwiązania
 - Bardzo długi czas pobierania danych (około 2 godzin) z początu pomogło przejście z BeutifullSoup na lxml natomiast dało to około 10% mniejszy czas natomiast poprzez zastosowanie wielowątkowości czas pobierania skrócił się do około 7 minut czyli dało to około 16 krotne przyspieszenie ponieważ najwięcej czasu było marnowane gdy program czekał na odpowedź z serwera a w tym czasie nic nie robił
-- Blokada ze strony serwera, znacznym przyspieszeniu scrapowania czasami serwer blokował dostęp error 403 rozwiązaniem było dodanie randomowego czasu w którym program nic nie robił oraz podczas łączenia użyć sejsi aby serwer "pamiętał" maszynę z której się łączymy,
--Liczne problemy podczas scrapowania min. ogłoszenia które wygasły, brak niektórych zmiennych czy nietypowe przypadki pobieranych zmiennych co powodowało różne długości list z danymi a konsekwencją tego było "rozjeżdżanie" się danych w większości przypadków przypadków pomogł error handling.
+- Blokada ze strony serwera, znacznym przyspieszeniu scrapowania czasami serwer blokował dostęp error 403 rozwiązaniem było "oszukanie" serwera poprzez radnomowe wybieranie User-Agnet aby serwer nie mógł rozpoznać, że łączymy się cały czas z jednego komputera
+- Liczne problemy podczas scrapowania min. ogłoszenia które wygasły, brak niektórych zmiennych czy nietypowe przypadki pobieranych zmiennych co powodowało różne długości list z danymi a konsekwencją tego było "rozjeżdżanie" się danych w większości przypadków przypadków pomogł error handling.

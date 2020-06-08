@@ -27,10 +27,26 @@ URL_list = []
 Place_list = []
 meh = []
 ended_auction = []
-header = {"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0"}
+
 session = requests.Session()
+
+def GET_UA():
+    U_A_List = ["Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",\
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36",\
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/600.1.25 (KHTML, like Gecko) Version/8.0 Safari/600.1.25",\
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0",\
+                "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",\
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",\
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/600.1.17 (KHTML, like Gecko) Version/7.1 Safari/537.85.10",\
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko",\
+                "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0",\
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36",\
+                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0"\
+                ]
+    return random.choice(U_A_List)
+
 def connect():
-    session.headers.update(header)
+    session.headers.update({'User-Agent':GET_UA()})
     connect = session.get('https://www.otodom.pl/sprzedaz/mieszkanie/wroclaw/?search%5Bcity_id%5D=39&nrAdsPerPage=72')
     soup = bs(connect.text, 'lxml')
     inide_strong_val = soup.find('div', class_="offers-index pull-left text-nowrap")
@@ -47,15 +63,16 @@ def search_links(page_link):
             pom = auction_headers[x].find('a', href=re.compile(r'[/]([a-z]|[A-Z])\w+')).attrs['href']
             links.append(pom)
 
+
+
 def page_scrap(URL):
     """Ta funkcja jako argument przyjmuje adres strony na której znajduje się ogłoszenie po czym sprawdza czy jest ono aktualne jeżeli tak to przystępuje wyciągania danych z tego ogłoszenia
-    dopisując je do list, jeżeli nie to pomija podany adres i przechodzi dalej"""
-    timeout = random.uniform(0.01, 0.26)
-    time.sleep(timeout)
-    page = requests.get(URL, headers=header)
-
-    print(page.status_code)
-    print(len(Floor_list))
+    dopisując je do list, jeżeli nie to pomija podany adres i przechodzi dalej """
+    
+    headers = {'User-Agent':GET_UA()}
+    page = requests.get(URL, headers=headers)
+    os.system("clear")
+    print("Odpowiedź z serwera:",page.status_code,"\nIlość przejrzanych ofert:",len(Floor_list))
     if page.status_code == 200:
         tree = html.fromstring(page.content)
         try:
@@ -110,7 +127,7 @@ def page_scrap(URL):
                 URL_list.append(URL)
                 Place_list.append(Place[1])
             except:
-                print("sometinh goes wrong ¯\_(ツ)_/¯")
+                print("someting goes wrong ¯\_(ツ)_/¯")
     else:
         error_counter.append(URL)
  
@@ -119,10 +136,8 @@ def main(story_urls):
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         executor.map(page_scrap, story_urls)
 
-
-
 def save_data(file, name):
-    with open(f'{name}.txt', 'w', encoding='utf8') as json_file:
+    with open(f'{name}.txt', 'wt', encoding='utf8') as json_file:
         json.dump(file,json_file, ensure_ascii=False)
         
 def save():
@@ -137,17 +152,7 @@ def save():
     save_data(URL_list, 'link')
     save_data(Place_list, 'Place')
         
-def save():
-    save_data(Area_list,"Area")
-    save_data(Auction_id_list,"Auction_id")
-    save_data(Floor_list, 'Floor')
-    save_data(Number_of_floors_list, 'Number_of_floors')
-    save_data(Number_of_rooms_list, 'Number_of_rooms')
-    save_data(Price_per_meter_list, 'Price_per_meter')
-    save_data(Price_list, 'Price')
-    save_data(Market_list, 'Market')
-    save_data(URL_list, 'link')
-    save_data(Place_list, 'Place')
+
 def show_info():
     print(len(meh))
     print(len(Price_list))
@@ -169,4 +174,4 @@ def init():
     t0 = time.time()
     main(linki)
     t1 = time.time()
-    print(f"{(t1-t0)/60} minutes to download stories.")         
+    print(f"Pobieranie zajęło {(t1-t0)/60} minut.")         
