@@ -49,7 +49,7 @@ def main():
             confirm = 1
 
         settings_data = {"email":mail,"market":market, "price_lowest": price_lowest, "price_highest": price_highest,"rooms_lowest":rooms_lowest,"rooms_highest":rooms_highest,"floor_lowest":floor_lowest,"floor_highest":floor_highest,"area_lowest":area_lowest,"area_highest":area_highest}
-        with open('settings.json', 'w', encoding='utf8') as json_file:
+        with open('settings.json', 'w', encoding='utf8') as json_file:  #zapisywanie otrzymanych danych do pliku z ustawieniami 
             json.dump(settings_data,json_file, ensure_ascii=False)
 
     
